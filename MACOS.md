@@ -6,46 +6,65 @@ check your version under **Apple menu > About This Mac**.
 
 ## Download the wallpapers
 
-For the whole collection, open [this repository](https://github.com/rafaelborges29/walls),
-choose **Code > Download ZIP**, and extract it. Allow roughly 3.5 GB for the
-extracted files, plus space for the ZIP; the collection can grow.
-
-To download only selected categories instead, use Terminal with Git installed:
+Use Terminal with Git installed to download only these categories: `aerial`,
+`apeiros`, `architecture`, `basalt`, `cold`, `digital`, `dreamcore`, `fogsmoke`,
+`minimal`, `monochrome`, `mountain`, `nature`, `nord`, and `stalenhag`.
 
 ```sh
 mkdir -p ~/Pictures
 cd ~/Pictures
 git clone --depth 1 --filter=blob:none --sparse https://github.com/rafaelborges29/walls.git
 cd walls
-git sparse-checkout set nature minimal mountain
+git sparse-checkout set aerial apeiros architecture basalt cold digital dreamcore \
+  fogsmoke minimal monochrome mountain nature nord stalenhag
 ```
 
-Replace `nature minimal mountain` with the category folders you want. If macOS
-prompts you to install Command Line Tools for Git, finish that installation and
-run the commands again. Run `git pull --ff-only` from the `walls` folder later to
-get updates.
+The sparse checkout selects which category folders are downloaded; other
+wallpaper categories are left out. Each `git sparse-checkout set` replaces the
+previous folder selection locally without changing anything on GitHub.
 
-## Choose one folder or mix categories
+If macOS prompts you to install Command Line Tools for Git, finish that
+installation and run the commands again. If you already cloned the repository,
+run `cd ~/Pictures/walls` and the `git sparse-checkout set` command above instead
+of cloning again.
 
-For a single category, use its folder directly, such as `walls/nature`.
+## Combine the images into one folder
 
-For a mix, create a folder such as `Pictures/Wallpaper Mix` in Finder and copy
-your chosen images into it. Put the image files directly inside that folder,
-rather than adding category subfolders. Review any duplicate-filename prompts
-when copying from multiple categories. Copies use additional disk space and do
-not automatically receive repository updates.
+Run this from the downloaded `walls` folder. It copies the images from all the
+selected categories into `~/Pictures/Wallpaper Mix`, with no subfolders:
 
-Keep the chosen folder in a permanent local location. Start with still images
-such as JPG and PNG; the `animated` category is not a built-in video wallpaper
-playlist.
+```sh
+cd ~/Pictures/walls
+mkdir -p "$HOME/Pictures/Wallpaper Mix"
+for category in aerial apeiros architecture basalt cold digital dreamcore \
+  fogsmoke minimal monochrome mountain nature nord stalenhag; do
+  for image in "$category"/*; do
+    case "$image" in
+      *.jpg|*.jpeg|*.png|*.webp)
+        cp -n "$image" "$HOME/Pictures/Wallpaper Mix/$category-${image##*/}"
+        ;;
+    esac
+  done
+done
+```
+
+The category prefix prevents images from different categories with the same
+filename from overwriting each other. `cp -n` skips existing destination files,
+so rerunning the command adds missing images without replacing your copies.
+README files are excluded, and the original images stay in the repository.
+
+The combined folder uses additional disk space. To get new images later, run
+`git pull --ff-only` from `~/Pictures/walls`, then rerun the copy commands. Existing
+copies are not updated or removed automatically. Keep `Wallpaper Mix` in place
+so macOS can continue using it. If an image format is not offered in Wallpaper
+settings, use a JPG or PNG version of that image.
 
 ## Enable desktop rotation
 
 1. Open **Apple menu > System Settings > Wallpaper**.
 2. Under **Your Photos**, choose **Add Photo > Choose Folder**. On versions that
    show **Add Folder or Album**, use **Add Folder** instead.
-3. Select your category folder or `Wallpaper Mix`, then click **Choose** or
-   **Open**.
+3. Select **Pictures > Wallpaper Mix**, then click **Choose** or **Open**.
 4. Select the folder's **Shuffle** / rotating-arrows tile instead of an individual
    image. Choose a change interval, such as every 5 minutes, from the controls
    near the current wallpaper preview. Enable random order if your version offers
