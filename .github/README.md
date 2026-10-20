@@ -4,6 +4,10 @@ This README is auto-generated. You may view its source code [here](docgen.py).
 Showcases are randomly chosen. Files are shuffled then first two
 from each category are chosen.
 
+## macOS setup
+
+[Automatically rotate wallpapers from a folder, including lock-screen setup](../MACOS.md).
+
 ## Showcase
 
 Categorized wallpaper showcase. two pictures per category.
